@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - CinemachineTarget
+  - SolidObject
   layers:
   - Default
   - TransparentFX
@@ -13,15 +14,15 @@ TagManager:
   - Water
   - UI
   - movable
+  - Player
+  - PickUp
   - 
   - 
   - 
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - World
   - 
   - 
   - 

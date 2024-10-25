@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using TMPro;
 
 public class Throw1 : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class Throw1 : MonoBehaviour
     public Transform cam;
     public Transform attackPoint;
     public GameObject objectToThrow;
+    public GameObject inventory;
 
     [Header("Settings")]
     public int totalThrows;
@@ -18,6 +20,7 @@ public class Throw1 : MonoBehaviour
     public KeyCode throwKey = KeyCode.Mouse0;
     public float throwForce;
     public float throwUpwardForce;
+    //public float force;
 
     bool readyToThrow;
 
@@ -28,11 +31,39 @@ public class Throw1 : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            PickUp();
+        }
         if (Input.GetKeyDown(throwKey) && readyToThrow && totalThrows > 0)
         {
             Throw();
         }
 
+    }
+
+    
+
+    void PickUp()
+    {
+        int layerMask = 1 << 8;
+        layerMask = ~layerMask;
+
+        RaycastHit hit;
+
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask))
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+            hit.transform.position = inventory.transform.position;
+            hit.transform.parent = inventory.transform;
+            Debug.Log("Did Hit");
+        }
+        else
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+            Debug.Log("Did not Hit");
+        }
     }
 
     private void Throw()
@@ -56,13 +87,13 @@ public class Throw1 : MonoBehaviour
         }
 
         // add force 
-        Vector3 forceToAdd = force * throwForce + transform.up * throwUpwardForce; 
+        Vector3 forceToAdd = forceDirection * throwForce + transform.up * throwUpwardForce; 
         
         //projectile.GetComponent<Rigidbody>();
 
 
 
-        projectileRb.AddForce(forceToAdd, ForceMode, Impulse);
+        projectileRb.AddForce(forceToAdd, ForceMode.Impulse);
 
         totalThrows--;
 
@@ -70,7 +101,7 @@ public class Throw1 : MonoBehaviour
         Invoke(nameof(ResetThrow), throwCooldown);
     }
 
-    private void ResetThrow();
+    private void ResetThrow()
     {
         readyToThrow = true;
     }

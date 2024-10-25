@@ -4,7 +4,36 @@ using UnityEditor;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
-{/*
+{
+    [SerializeField] Gun myGun;
+    [SerializeField] float lifeTime = 3;
+    private void Start()
+    {
+        myGun = FindAnyObjectByType<Gun>();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("SolidObject"))
+        {
+            Debug.Log("hit");
+            gameObject.SetActive(false);
+            return;
+        }
+    }
+
+    private void Update()
+    {
+        StartCoroutine(DeactivateAfterSeconds(lifeTime));
+    }
+
+    
+    IEnumerator DeactivateAfterSeconds(float sec)
+    {
+        yield return new WaitForSeconds(sec);
+        gameObject.SetActive(false);
+    }
+    /*
     public class UpgradeItemStats
     {
         public float DamageIncrease { get; set; }
